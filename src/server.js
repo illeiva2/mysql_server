@@ -1,4 +1,4 @@
-require('./initDB')();
+require('./DB/initDB');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const dotenv = require('dotenv');
