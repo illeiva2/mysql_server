@@ -1,4 +1,11 @@
-module.exports = (sequelize, DataTypes) => {
+const { DataTypes } = require('sequelize');
+const sequelize = require('../conection/connection');
+const Categoria = require('./categorias');
+const Genero = require('./generos');
+const Actor = require('./actricesyactores');
+const generos_mid_catalogo = require('./generos_mid_catalogo');
+const reparto_mid_catalogo = require('./reparto_mid_catalogo');
+
   const Catalogo = sequelize.define('Catalogo', {
     id: {
       type: DataTypes.INTEGER,
@@ -25,14 +32,19 @@ module.exports = (sequelize, DataTypes) => {
     },
     trailer: {
       type: DataTypes.STRING(255),
-    },
+    }
+  }, {
+      timestamps: false,
+      tableName: 'catalogo'
   });
 
-  Catalogo.associate = (models) => {
-    Catalogo.belongsTo(models.Categoria, { foreignKey: 'idCategoria' });
-    Catalogo.belongsToMany(models.Genero, { through: 'GenerosMidCatalogo', foreignKey: 'idCatalogo' });
-    Catalogo.belongsToMany(models.ActorActriz, { through: 'RepartoMidCatalogo', foreignKey: 'idCatalogo' });
-  };
-
-  return Catalogo;
-};
+  Categoria.hasMany(Catalogo, { foreignKey: 'idCategoria' });
+  Catalogo.belongsTo(Categoria, { foreignKey: 'idCategoria', as: 'categorias' });
+  
+  Genero.belongsToMany(Catalogo, { through: generos_mid_catalogo, foreignKey: 'idGenero' });
+  Catalogo.belongsToMany(Genero, { through: generos_mid_catalogo, foreignKey: 'idCatalogo', as: 'generos' });
+  
+  Actor.belongsToMany(Catalogo, { through: reparto_mid_catalogo, foreignKey: 'idAct' });
+  Catalogo.belongsToMany(Actor, { through: reparto_mid_catalogo, foreignKey: 'idCatalogo', as: 'reparto' });
+  
+module.exports = Catalogo;

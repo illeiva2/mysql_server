@@ -2,10 +2,10 @@ const express = require("express")
 const router = express.Router()
 const sequelize = require('../conection/connection');
 const QueryTypes = require('sequelize');
-// const Catalogo = require('../models/catalogo.js');
-// const Categoria = require('../models/categorias.js');
-// const Genero = require('../models/generos.js');
-// const ActorActriz = require('../models/actricesyactores.js');
+const Catalogo = require('../models/catalogo.js');
+const Categoria = require('../models/categorias.js');
+const Genero = require('../models/generos.js');
+const ActorActriz = require('../models/actricesyactores.js');
 
 
 router.get('/', async (req, res) => {
@@ -25,58 +25,72 @@ router.get('/', async (req, res) => {
 });
 
 // aun no probado
-// router.get('/:id', async (req, res) => {
-//     const catalogoId = req.params.id;
-  
-//     try {
-//       const catalogo = await Catalogo.findByPk(catalogoId, {
-//         include: [
-//           { model: Categoria },
-//           { model: Genero, through: 'GenerosMidCatalogo' },
-//           { model: ActorActriz, through: 'RepartoMidCatalogo' },
-//         ],
-//       });
-  
-//       if (!catalogo) {
-//         return res.status(404).json({ message: 'El elemento del catálogo no se encontró.' });
-//       }
-  
-//       res.status(200).json({ catalogo });
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ message: 'Error interno del servidor' });
-//     }
-//   });
-  
-
-// Obtener un catalogo por ID
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
-    if (isNaN(Number(id))) {
-        res.status(400).json({ message: 'El id es invalido, intente nuevamente' });
-        return;
-    }
-
     try {
-        const consultaSQL = 'SELECT * FROM JSON_VIEW WHERE id = :id';
+        const catalogo = await Catalogo.findByPk(Number(id), {
+            attributes: { exclude: ['idCategoria'] },
+            include: [
+                {
+                    model: Categoria,
+                    as: 'categorias'
+                },
+                {
+                    model: Genero,
+                    as: 'generos',
+                    through: { attributes: [] } // Evita que se incluyan atributos adicionales
+                },
+                {
+                    model: ActorActriz,
+                    as: 'reparto',
+                    through: { attributes: [] } // Evita que se incluyan atributos adicionales
 
-        const catalogo = await sequelize.query(consultaSQL, {
-            type: QueryTypes.SELECT,
-            replacements: { id: id },
-        });
+                }
+            ]
+        }
+        );
 
-        if (!catalogo.length) {
-            res.status(404).json({ message: 'El id no corresponde a un item del catalogo' });
-            return;
+        if (!catalogo) {
+            return res.status(404).json({ message: 'El elemento del catálogo no se encontró.' });
         }
 
-        res.status(200).json(catalogo);
+        res.status(200).json({ catalogo });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Ha ocurrido un error al traer el catalogo' });
+        console.error(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
     }
 });
+
+
+// Obtener un catalogo por ID
+// router.get('/:id', async (req, res) => {
+//     const { id } = req.params;
+
+//     if (isNaN(Number(id))) {
+//         res.status(400).json({ message: 'El id es invalido, intente nuevamente' });
+//         return;
+//     }
+
+//     try {
+//         const consultaSQL = 'SELECT * FROM JSON_VIEW WHERE id = :id';
+
+//         const catalogo = await sequelize.query(consultaSQL, {
+//             type: QueryTypes.SELECT,
+//             replacements: { id: id },
+//         });
+
+//         if (!catalogo.length) {
+//             res.status(404).json({ message: 'El id no corresponde a un item del catalogo' });
+//             return;
+//         }
+
+//         res.status(200).json(catalogo);
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ message: 'Ha ocurrido un error al traer el catalogo' });
+//     }
+// });
 
 router.get('/nombre/:nombre', async (req, res) => {
     const { nombre } = req.params;

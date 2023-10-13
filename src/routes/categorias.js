@@ -10,7 +10,6 @@ router.get("/", async (req, res) => {
         res.status(200).send(categorias);
     } catch (err) {
         res.status(500)
-        next(err)
     }
 })
 

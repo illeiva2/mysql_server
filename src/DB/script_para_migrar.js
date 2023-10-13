@@ -25,7 +25,7 @@ require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
             let idCategoria;
             let sql = 'SELECT * FROM categorias WHERE LOWER(nombre) = ?';
 
-            const [rows] = await connection.execute(sql, [item.categoria.toLowerCase()]);
+            const [rows] = await connection.execute(sql, [item.categoria]);
 
             if (!rows.length) {
                 const [res] = await connection.execute('INSERT INTO categorias (nombre) VALUES (?)', [item.categoria]);
@@ -35,16 +35,16 @@ require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
                 idCategoria = rows[0].id;
                 console.log('Categoria duplicada', idCategoria);
             }
-
+            const id = item.id
             const poster = item.poster;
             const titulo = item.titulo;
             const resumen = item.resumen;
             const trailer = item.trailer === undefined ? null : item.trailer;
             const temporadas = item.temporadas;
 
-            sql = 'INSERT INTO catalogo (poster, titulo, resumen, temporadas, idCategoria, trailer) VALUES (?, ?, ?, ?, ?, ?)';
+            sql = 'INSERT INTO catalogo (id, poster, titulo, resumen, temporadas, idCategoria, trailer) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
-            const [res] = await connection.execute(sql, [poster, titulo, resumen, temporadas, idCategoria, trailer]);
+            const [res] = await connection.execute(sql, [id, poster, titulo, resumen, temporadas, idCategoria, trailer]);
 
             const idCatalogo = res.insertId;
             console.log('Contenido insertado', idCatalogo);

@@ -1,12 +1,12 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../conection/connection');
 
-const generos_mid_catalogo = sequelize.define('generos_mid_catalogo', {
-    idGenero: {
+const reparto_mid_catalogo = sequelize.define('reparto_mid_catalogo', {
+    idAct: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'generos', 
+            model: 'actricesyactores',
             key: 'id' 
         }
     },
@@ -20,7 +20,7 @@ const generos_mid_catalogo = sequelize.define('generos_mid_catalogo', {
     }
 }, {
     timestamps: false,
-    tableName: 'generos_mid_catalogo'
+    tableName: 'reparto_mid_catalogo'
 });
 
-module.exports = generos_mid_catalogo;
+module.exports = reparto_mid_catalogo;

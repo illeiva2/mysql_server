@@ -1,16 +1,19 @@
-module.exports = (sequelize, DataTypes) => {
-  const ActorActriz = sequelize.define('ActorActriz', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    nombre: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      unique: true,
-    },
-  });
+const { DataTypes } = require('sequelize');
+const sequelize = require('../conection/connection');
+const Actores = sequelize.define('actores', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  nombre: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    unique: true,
+  }
+}, {
+  timestamps: false,
+  tableName: 'actricesyactores'
+});
 
-  return ActorActriz;
-};
+module.exports = Actores;
