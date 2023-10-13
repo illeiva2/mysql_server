@@ -1,9 +1,9 @@
+require('./initDB')();
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
-const { Op } = require("sequelize")
 
 const sequelize = require("./conection/connection")
 const catalogo = require("./routes/catalogo")

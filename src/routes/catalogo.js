@@ -24,7 +24,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// aun no probado
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -39,12 +38,12 @@ router.get('/:id', async (req, res) => {
                 {
                     model: Genero,
                     as: 'generos',
-                    through: { attributes: [] } // Evita que se incluyan atributos adicionales
+                    through: { attributes: [] } 
                 },
                 {
                     model: ActorActriz,
                     as: 'reparto',
-                    through: { attributes: [] } // Evita que se incluyan atributos adicionales
+                    through: { attributes: [] } 
 
                 }
             ]
@@ -55,6 +54,16 @@ router.get('/:id', async (req, res) => {
             return res.status(404).json({ message: 'El elemento del catálogo no se encontró.' });
         }
 
+        catalogo.dataValues.categorias = catalogo.categorias.nombre;
+
+        const generoNombres = catalogo.generos.map(genero => genero.nombre).join(', ');
+
+        catalogo.dataValues.generos = generoNombres;
+
+        const repartoNombres = catalogo.reparto.map(actor => actor.nombre).join(', ');
+
+        catalogo.dataValues.reparto = repartoNombres;
+
         res.status(200).json({ catalogo });
     } catch (error) {
         console.error(error);
@@ -63,40 +72,11 @@ router.get('/:id', async (req, res) => {
 });
 
 
-// Obtener un catalogo por ID
-// router.get('/:id', async (req, res) => {
-//     const { id } = req.params;
-
-//     if (isNaN(Number(id))) {
-//         res.status(400).json({ message: 'El id es invalido, intente nuevamente' });
-//         return;
-//     }
-
-//     try {
-//         const consultaSQL = 'SELECT * FROM JSON_VIEW WHERE id = :id';
-
-//         const catalogo = await sequelize.query(consultaSQL, {
-//             type: QueryTypes.SELECT,
-//             replacements: { id: id },
-//         });
-
-//         if (!catalogo.length) {
-//             res.status(404).json({ message: 'El id no corresponde a un item del catalogo' });
-//             return;
-//         }
-
-//         res.status(200).json(catalogo);
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ message: 'Ha ocurrido un error al traer el catalogo' });
-//     }
-// });
-
-router.get('/nombre/:nombre', async (req, res) => {
+router.get('/titulo/:titulo', async (req, res) => {
     const { nombre } = req.params;
 
     try {
-        const consultaSQL = 'SELECT * FROM JSON_VIEW WHERE nombre = :nombre';
+        const consultaSQL = 'SELECT * FROM JSON_VIEW WHERE titulo = :titulo';
 
         const catalogo = await sequelize.query(consultaSQL, {
             type: QueryTypes.SELECT,
