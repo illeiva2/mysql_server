@@ -5,7 +5,8 @@ const Catalogo = require('../models/catalogo.js');
 const Categoria = require('../models/categorias.js');
 const Genero = require('../models/generos.js');
 const ActorActriz = require('../models/actricesyactores.js');
-const { Op } = require('sequelize');
+const { Op, QueryTypes } = require('sequelize');
+
 
 // Ruta GET para obtener el catálogo de películas mediante la vista.
 
@@ -20,7 +21,7 @@ router.get('/', async (req, res) => {
             return;
         }
         // Si el catálogo contiene registros, se devuelve una respuesta exitosa 200 con los registros del catálogo. 
-        res.status(200).json(catalogo[0]);
+        res.status(200).json(catalogo);
     } catch (error) {
         // Cualquier error se registra en la consola para su posterior análisis.
         console.log(error);

@@ -72,3 +72,5 @@ async function createDatabase() {
 
 // Llama a la función asincrónica
 createDatabase();
+
+return
