@@ -1,4 +1,4 @@
-# Proyecto de Node.JS and MySQL para Argentina Programa 4.0
+# Proyecto de Node.JS y MySQL 
 
 ## Configuración
 
